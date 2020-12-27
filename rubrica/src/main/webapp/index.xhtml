@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Rubrica 1.0</title>
+    </h:head>
+    <h:body>
+        <h1>Rubrica 1.0</h1>
+          <h:form id="listform">
+	         <p:spacer height="10"></p:spacer>
+			 <p:spacer height="10"/>
+			 <p:panel header="I miei contatti">
+		        <p:dataTable id="tabContatti" var="contatti" value="#{insertBean.contatti}"
+		        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+		                 paginator="true" rows="10" style="margin-bottom:20px"
+		                 selection="#{insertBean.contact}" selectionMode="single"
+		                 rowKey="#{contatti.id}"
+					><!-- onselectComplete="updDialog.show() -->
+		       	<p:ajax event="rowSelect"  update="updForm:updDisplay" />
+		       	 <f:facet name="{Exporters}">
+		            <h:commandLink>
+		                <p:graphicImage value="/images/excel.png" width="24"/>
+		                <p:dataExporter type="xls" target="tabContatti" fileName="rubrica_exported" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage value="/images/pdf.png" width="24"/>
+		                <p:dataExporter type="pdf" target="tabContatti" fileName="rubrica_exported"/>
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage value="/images/csv.png" width="24"/>
+		                <p:dataExporter type="csv" target="tabContatti" fileName="rubrica_exported" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage value="/images/xml.png" width="24"/>
+		                <p:dataExporter type="xml" target="tabContatti" fileName="rubrica_exported" />
+		            </h:commandLink>
+		        </f:facet>
+		       	
+		       	<p:column>
+		            <f:facet name="header">
+		                <h:outputText value="Id" />
+		            </f:facet>
+		            <h:outputText value="#{contatti.id}" />
+	        	</p:column>
+	        	<p:column>
+		            <f:facet name="header">
+		                <h:outputText value="Nome" />
+		            </f:facet>
+		            <h:outputText value="#{contatti.nome}" />
+	        	</p:column>
+	        	<p:column>
+		            <f:facet name="header">
+		                <h:outputText value="Cognome" />
+		            </f:facet>
+		            <h:outputText value="#{contatti.cognome}" />
+	        	</p:column>
+	        	<p:column>
+		            <f:facet name="header">
+		                <h:outputText value="TipoContatto" />
+		            </f:facet>
+		            <h:outputText value="#{contatti.tipoContatto}" />
+	        	</p:column>
+	        	        	<p:column>
+		            <f:facet name="header">
+		                <h:outputText value="Numero" />
+		            </f:facet>
+		            <h:outputText value="#{contatti.numero}" />
+	        	</p:column>
+		        </p:dataTable>
+		     </p:panel>
+        </h:form>
+        <p:separator />
+        
+        <h:form id="updForm">
+        	<p:remoteCommand name="updateGrid2" update="listform:tabContatti,growl"/> 
+			<p:panel id="toggeable" header="Aggiornamento contatto" widgetvar="panel" toggeable="true" 
+			toggleOrientation="vertical"
+			closable="false" toggleSpeed="500">
+				<h:panelGrid columns="1" cellpadding="3">
+				<p:outputPanel id="updDisplay">
+					<h:inputHidden value="#{insertBean.contact.id}" />
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Nome" />
+							<p:inputText value="#{insertBean.contact.nome}" id="txtnome" required="true"/>
+						<h:outputLabel value="Cognome" />
+						 <p:inputText value="#{insertBean.contact.cognome}" id="txtcognome" required="true"/>
+						<h:outputLabel value="Tipo contatto" />
+							<p:inputText value="#{insertBean.contact.tipoContatto}" id="txttipoContatto" required="true"/>
+						<h:outputLabel value="Numero" />
+						 <p:inputText value="#{insertBean.contact.numero}" id="txtNumero" required="true"/>
+					</h:panelGrid>
+					<p:commandButton value="Aggiorna"
+						actionListener="#{insertBean.update}"  process="@form" onsuccess="updateGrid2()">
+					</p:commandButton><!-- onclick="updDialog.close()"-->
+					<p:commandButton value="Elimina"
+						actionListener="#{insertBean.delete}" process="@form" onsuccess="updateGrid2()">
+					</p:commandButton>
+							<p:growl id="growl" showDetail="true"  /> 
+				</p:outputPanel>
+				</h:panelGrid>				
+			</p:panel>
+        </h:form>
+        
+        <p:separator />
+        <h:form id="insertForm">
+        
+			<p:panel id="toggeable" header="Inserimento nuovo" widgetvar="panel2" toggeable="true" closable="false" toggleSpeed="500">
+			<p:outputPanel id="newDisplay">
+			    	
+				<p:remoteCommand name="updateGrid" update="listform:tabContatti"/> 
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Nome" />
+					<p:inputText value="#{insertBean.contact.nome}"></p:inputText>
+					<h:outputLabel value="Cognome" />
+					<p:inputText value="#{insertBean.contact.cognome}"></p:inputText>
+					<h:outputLabel value="Tipo contatto" />
+					<p:selectOneMenu id="tipoContatti" value="#{insertBean.contact.tipoContatto}">
+						<f:selectItem itemLabel="-" itemValue="" />
+            			<f:selectItems value="#{insertBean.tipocontatti}" />	
+					</p:selectOneMenu>
+					<h:outputLabel value="Numero" />
+					<p:inputText value="#{insertBean.contact.numero}"></p:inputText>
+				</h:panelGrid>
+				<p:commandButton value="Salva"
+					actionListener="#{insertBean.save}"  update="@form,growl2" process="@form"
+					onsuccess="updateGrid()"
+					></p:commandButton><!-- onclick="newDialog.close()" -->
+					<p:growl id="growl2" showDetail="true"  /> 
+			</p:outputPanel>
+			</p:panel>
+
+	</h:form>
+	<p:separator />
+	
+	<h:form>
+	<p:panel id="toggeable" header="Ricerca.." widgetvar="panel3" >
+		<p:outputPanel id="finderContact">
+			<p:remoteCommand name="updateResults" update="findResultTable"/> 
+			<h:panelGrid> 
+			<p:row>
+				<p:column><h:outputLabel value="Cerca Numero:"></h:outputLabel></p:column>
+				<p:column colspan="3"><p:autoComplete id="txtfindnumero" maxResult="10" value="#{finderBean.numero}" completeMethod="#{finderBean.getCompleteNumero}" /></p:column>
+			</p:row>
+			<p:row>
+				<p:column><h:outputLabel value="Cerca Nome:   "></h:outputLabel></p:column>
+				<p:column><p:inputText id="txtfinderNome" value="#{finderBean.contattoNome}"  /></p:column>
+				<p:column><h:outputLabel value="Cerca Cognome:"></h:outputLabel></p:column>
+				<p:column><p:inputText id="txtfinderCognome" value="#{finderBean.contattoCognome}"  /></p:column>
+			</p:row>
+			<p:row>
+				<p:column colspan="4" ><p:commandButton value="ricerca" actionListener="#{finderBean.findContatto}" update="@form" process="@form"
+				onsuccess="updateResults"/></p:column>
+			</p:row>
+		    </h:panelGrid>
+		</p:outputPanel>
+		<p:dataTable  id="findResultTable" var="contatti" value="#{finderBean.contatti}">
+		    <p:column headerText="Id">
+		        <h:outputText value="#{contatti.id}" />
+		    </p:column>		 
+		    <p:column headerText="Nome">
+		        <h:outputText value="#{contatti.nome}" />
+		    </p:column>		 
+		    <p:column headerText="Cognome">
+		        <h:outputText value="#{contatti.cognome}" />
+		    </p:column>		 
+		    <p:column headerText="Tipo contatto">
+		        <h:outputText value="#{contatti.tipoContatto}" />
+		    </p:column>		    
+	     	<p:column headerText="Numero">
+		        <h:outputText value="#{contatti.numero}" />
+		    </p:column>
+		</p:dataTable>
+		
+	</p:panel>
+	</h:form>
+      
+			
+    </h:body>
+ 
+</html>

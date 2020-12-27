@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="5 minutes">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSS} %-5level [%thread] %logger{0}: %msg%n</pattern>
+			<immediateFlush>true</immediateFlush>					
+		</encoder>
+	</appender>
+	
+	<appender name="LOG-JPAEX-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>C:/ProgrammiStandalone/Servers/apache-tomcat-8.0.30/logs/JpaexLOG.log</file>
+	    
+	    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>C:/ProgrammiStandalone/Servers/apache-tomcat-8.0.30/logs/JpaexLOG.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+
+	    <encoder>
+			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSS} %-5level [%thread] %logger{0}: %msg%n</pattern>
+			<immediateFlush>true</immediateFlush>
+	    </encoder>
+  	</appender>
+	
+	
+	
+	<logger name="com.cadit" level="INFO" />
+    <logger name="org.hibernate.jpa" level="INFO" />
+     <logger name="org.hibernate" level="INFO" />
+     <logger name="com.cadit.aspect.AspectLogging" level="DEBUG"/>
+
+	<root level="DEBUG">
+		<appender-ref ref="LOG-JPAEX-FILE"/>
+		<appender-ref ref="STDOUT"/>
+	</root>
+</configuration>
